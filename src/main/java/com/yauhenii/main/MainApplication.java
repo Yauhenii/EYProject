@@ -3,6 +3,7 @@ package com.yauhenii.main;
 import com.yauhenii.main.repository.ExcelSheetRepository;
 import com.yauhenii.main.service.ExcelSheetService;
 import java.awt.EventQueue;
+import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,7 +24,10 @@ public class MainApplication {
 
         EventQueue.invokeLater(() -> {
             Test test = context.getBean(Test.class);
-            test.printAll();
+//            test.printAll();
+//            test.saveExcel(new File("/Users/zhenyamordan/Desktop/testfile.xls"));
+//            test.printByFile("testfile.xls");
+            test.deleteSheet("testfile.xls");
         });
     }
 
