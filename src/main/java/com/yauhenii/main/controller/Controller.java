@@ -1,17 +1,18 @@
 package com.yauhenii.main.controller;
 
 
-import com.yauhenii.main.service.ExcelSheetService;
+import com.yauhenii.main.model.sheet.entity.ExcelSheetRow;
+import com.yauhenii.main.model.sheet.service.ExcelSheetService;
+import com.yauhenii.main.model.sheetinfo.entity.ExcelSheetInfo;
+import com.yauhenii.main.model.sheetinfo.service.ExcelSheetInfoService;
 import com.yauhenii.main.utils.ExcelSheetParser;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import lombok.SneakyThrows;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,23 +26,41 @@ import org.springframework.web.multipart.MultipartFile;
 public class Controller {
 
     private final ExcelSheetService excelSheetService;
+    private final ExcelSheetInfoService excelSheetInfoService;
 
-    public Controller(ExcelSheetService excelSheetService) {
+    public Controller(ExcelSheetService excelSheetService,
+        ExcelSheetInfoService excelSheetInfoService) {
         this.excelSheetService = excelSheetService;
+        this.excelSheetInfoService = excelSheetInfoService;
     }
 
     @SneakyThrows
     @PostMapping("/add")
     public void addExcelSheet(@RequestParam("file") MultipartFile multipartFile) {
         File file = multipartToFile(multipartFile, multipartFile.getOriginalFilename());
-        excelSheetService.save(ExcelSheetParser.readFromExcel(file));
+        Object[] result = ExcelSheetParser.readFromExcel(file);
+        excelSheetService.save((List<ExcelSheetRow>) result[0]);
+        excelSheetInfoService.save((List<ExcelSheetInfo>) result[1]);
     }
 
     @SneakyThrows
-    @PostMapping("/request")
+    @PostMapping("/request/body")
     public ResponseEntity<Resource> getExcelSheet(@RequestParam("name") String fileName) {
         Resource resource = new ByteArrayResource(
-            ExcelSheetParser.writeToCsv(excelSheetService.findByFilename(fileName)).getBytes());
+            ExcelSheetParser.writeSheetToCsv(excelSheetService.getRowsByFilename(fileName))
+                .getBytes());
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + fileName + "\"")
+            .body(resource);
+    }
+
+    @SneakyThrows
+    @PostMapping("/request/info")
+    public ResponseEntity<Resource> getExcelSheetInfo(@RequestParam("name") String fileName) {
+        Resource resource = new ByteArrayResource(
+            ExcelSheetParser.writeInfoToCsv(excelSheetInfoService.getInfoByFilename(fileName))
+                .getBytes());
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + fileName + "\"")
@@ -52,24 +71,12 @@ public class Controller {
     @GetMapping("/init")
     public ResponseEntity<Resource> getFileNames() {
         Resource resource = new ByteArrayResource(
-            excelSheetService.findFileName().getBytes());
+            excelSheetService.getFilenames().getBytes());
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment;")
             .body(resource);
     }
-
-//    @SneakyThrows
-//    @PostMapping("/request")
-//    public ResponseEntity<Resource> getExcelSheet(@RequestParam("name") String fileName) {
-//        File file = ExcelSheetParser.writeToCsv(excelSheetService.findByFilename(fileName));
-//        Resource resource = new InputStreamResource(new FileInputStream(file));
-//        return ResponseEntity.ok()
-//            .header(HttpHeaders.CONTENT_DISPOSITION,
-//                "attachment; filename=\"" + file.getName() + "\"")
-//            .contentLength(file.length())
-//            .body(resource);
-//    }
 
     public File multipartToFile(MultipartFile multipart, String fileName)
         throws IllegalStateException, IOException {

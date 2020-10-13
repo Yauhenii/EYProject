@@ -18,9 +18,9 @@ window.onload = function () {
             "list-group-item-action");
         buttonElement.innerText = fileNames[i];
         document.getElementById("filesList").appendChild(buttonElement);
-        const currentFileName=fileNames[i];
+        const currentFileName = fileNames[i];
         //add listener
-        buttonElement.addEventListener("click",function () {
+        buttonElement.addEventListener("click", function () {
           openTablePage(currentFileName);
         });
       }
@@ -52,9 +52,9 @@ fileInput.addEventListener("change", function () {
     //change list item text
     buttonElement.innerText = fileName;
 
-    const currentFileName=fileName;
+    const currentFileName = fileName;
     //add listener
-    buttonElement.addEventListener("click",function () {
+    buttonElement.addEventListener("click", function () {
       openTablePage(currentFileName);
     });
   };
@@ -70,7 +70,7 @@ function openTablePage(fileName) {
     var fromDataGet = new FormData();
     fromDataGet.append('name', fileName);
     var xhrGet = new XMLHttpRequest();
-    xhrGet.open('POST', 'api/request');
+    xhrGet.open('POST', 'api/request/body');
     xhrGet.send(fromDataGet);
     xhrGet.onload = function () {
       csv = xhrGet.response.toString().split('\n');
@@ -88,7 +88,35 @@ function openTablePage(fileName) {
         opened.document.getElementById("tableBody").appendChild(rowElement);
       }
 
+      var fromDataInfo = new FormData();
+      fromDataInfo.append('name', fileName);
+      var xhrInfo = new XMLHttpRequest();
+      xhrInfo.open('POST', 'api/request/info');
+      xhrInfo.send(fromDataInfo);
+      xhrInfo.onload = function () {
+        info = xhrInfo.response.toString().split(',');
+        stringToShow = `Bank name: ${info[0]}. For the period from ${info[1]} to ${info[2]}`
+        opened.document.getElementById("infoTable").innerText = stringToShow;
+      }
+
+      const saveAsButton = opened.document.getElementById("saveAs");
+      const text = xhrGet.response;
+      const filenm = fileName;
+      saveAsButton.addEventListener("click", function () {
+        downloadToFile(text, filenm.split('.')[0], "csv");
+      })
+
     };
   };
 }
 
+const downloadToFile = (content, filename, contentType) => {
+  const a = document.createElement('a');
+  const file = new Blob([content], {type: contentType});
+
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(a.href);
+};

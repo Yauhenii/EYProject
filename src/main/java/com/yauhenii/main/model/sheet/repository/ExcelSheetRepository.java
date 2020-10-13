@@ -1,6 +1,6 @@
-package com.yauhenii.main.repository;
+package com.yauhenii.main.model.sheet.repository;
 
-import com.yauhenii.main.entity.ExcelSheetRow;
+import com.yauhenii.main.model.sheet.entity.ExcelSheetRow;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

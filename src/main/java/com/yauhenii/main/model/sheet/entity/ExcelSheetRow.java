@@ -1,4 +1,4 @@
-package com.yauhenii.main.entity;
+package com.yauhenii.main.model.sheet.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,32 +14,32 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table (name = "TBS", schema = "eyproject")
+@Table(name = "TBS", schema = "eyproject")
 public class ExcelSheetRow {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column (name = "bank_account")
+    @Column(name = "bank_account")
     private int bankAccount;
 
-    @Column (name = "opening_balance_asset")
+    @Column(name = "opening_balance_asset")
     private double openingBalanceAsset;
 
-    @Column (name = "opening_balance_liability")
+    @Column(name = "opening_balance_liability")
     private double openingBalanceLiability;
 
-    @Column (name = "turnover_credit")
+    @Column(name = "turnover_credit")
     private double turnoverCredit;
 
-    @Column (name = "turnover_debit")
+    @Column(name = "turnover_debit")
     private double turnoverDebit;
 
-    @Column (name = "closing_balance_asset")
+    @Column(name = "closing_balance_asset")
     private double closingBalanceAsset;
 
-    @Column (name = "closing_balance_liability")
+    @Column(name = "closing_balance_liability")
     private double closingBalanceLiability;
 
     @Column

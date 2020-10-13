@@ -1,9 +1,7 @@
-package com.yauhenii.main.service;
+package com.yauhenii.main.model.sheet.service;
 
-import com.yauhenii.main.entity.ExcelSheetRow;
-import com.yauhenii.main.repository.ExcelSheetRepository;
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.yauhenii.main.model.sheet.entity.ExcelSheetRow;
+import com.yauhenii.main.model.sheet.repository.ExcelSheetRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +16,7 @@ public class ExcelSheetService {
 
     private final ExcelSheetRepository excelSheetRepository;
 
-    public List<ExcelSheetRow> findByFilename(String filename) {
+    public List<ExcelSheetRow> getRowsByFilename(String filename) {
         return excelSheetRepository.findByFilename(filename);
     }
 
@@ -30,14 +28,13 @@ public class ExcelSheetService {
         excelSheetRepository.saveAll(excelSheetRowList);
     }
 
-    public String findFileName() {
+    public String getFilenames() {
         List<ExcelSheetRow> excelSheet = excelSheetRepository.findAll();
         HashSet<String> hashSet = new HashSet<>();
         for (ExcelSheetRow row : excelSheet) {
             hashSet.add(row.getFilename());
         }
-        String resultString = hashSet.stream().collect(Collectors.joining(" "));
-        return resultString;
+        return hashSet.stream().collect(Collectors.joining(" "));
     }
 
 }
