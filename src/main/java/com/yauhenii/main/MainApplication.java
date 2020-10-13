@@ -27,7 +27,14 @@ public class MainApplication {
 //            test.printAll();
 //            test.saveExcel(new File("/Users/zhenyamordan/Desktop/testfile.xls"));
 //            test.printByFile("testfile.xls");
-            test.deleteSheet("testfile.xls");
+//            test.deleteSheet("testfile.xls");
+//            File file = test.writeFile();
+//            System.out.println(file.getName());
+//            if(test.getFileNames()!=null){
+//                System.out.println();
+//            } else{
+//                System.out.println("Lol");
+//            }
         });
     }
 

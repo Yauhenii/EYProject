@@ -3,6 +3,8 @@ package com.yauhenii.main.utils;
 import com.yauhenii.main.entity.ExcelSheetRow;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,9 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class ExcelSheetParser {
 
-    private final static String SHEET_NAME = "Sheet1";
-    private final static int HEADER_LENGTH = 9;
+    private static final String SHEET_NAME = "Sheet1";
+    public static final String CSV_FILE_NAME = "table.csv";
+    private static final int HEADER_LENGTH = 9;
 
     enum Column {
         BANK_ACCOUNT,
@@ -70,6 +73,33 @@ public class ExcelSheetParser {
                     filename));
         }
         return resultExcelSheetRow;
+    }
+
+    public static String writeToCsv(List<ExcelSheetRow> excelSheet) throws IOException {
+//        File resultFile = new File(CSV_FILE_NAME);
+//        resultFile.createNewFile();
+//        FileWriter fileWriter = new FileWriter(resultFile);
+        StringBuffer stringBuffer = new StringBuffer();
+        for (ExcelSheetRow row : excelSheet) {
+//            stringBuffer = new StringBuffer();
+            stringBuffer.append(row.getBankAccount());
+            stringBuffer.append(",");
+            stringBuffer.append(row.getOpeningBalanceAsset());
+            stringBuffer.append(",");
+            stringBuffer.append(row.getOpeningBalanceLiability());
+            stringBuffer.append(",");
+            stringBuffer.append(row.getTurnoverDebit());
+            stringBuffer.append(",");
+            stringBuffer.append(row.getTurnoverCredit());
+            stringBuffer.append(",");
+            stringBuffer.append(row.getClosingBalanceAsset());
+            stringBuffer.append(",");
+            stringBuffer.append(row.getOpeningBalanceLiability());
+            stringBuffer.append("\n");
+//            fileWriter.write(stringBuffer.toString());
+        }
+//        fileWriter.close();
+        return stringBuffer.toString();
     }
 
 }
